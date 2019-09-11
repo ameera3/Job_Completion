@@ -16,8 +16,11 @@ using namespace std;
  * Class Name: Job
  * Instance Variables:
  * Description: Implements a job class for the problem of minimizing
- *              the weighted sum of job completion times. The score is
- *		weight minus length.
+ *              the weighted sum of job completion times. To rank the
+ *              jobs, we use a non-optimal score weight - length
+ *              (badScore) and an optimal score weight/length
+ *              (goodScore).
+ *		
  * Public Methods:
  * Private Methods: None
  */

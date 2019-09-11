@@ -1,5 +1,12 @@
 /* Filename: Job_Completion.cpp
- * Description:
+ * Description: The command line program, Job_Completion.cpp, takes in one
+ * 		parameter, an input file name. The input file specified by
+ * 		the input file name should contain a list of jobs with 
+ * 		positive integral weights and lengths. The program runs two
+ * 		greedy algorithms to determine the sum of the weighted 
+ * 		completion times. The first greedy algorithm is non-optimal
+ * 		and uses the score weight - length. The second greedy 
+ * 		algorithm is optimal and uses the score weight/length.
  */
 
 #include <fstream>
@@ -18,6 +25,11 @@
 
 using namespace std;
  
+/* Parses the input file and inputs each job into two different priority
+ * queues according to the two different scores used. The priority queue
+ * badQueue uses the non-optimal score weight - length while the priority
+ * queue goodQueue uses the optimal score weight/length.
+ */
 void loadfromFile(const char* filename,
 		  priority_queue<Job*, vector<Job*>, JobPtrComp>& badQueue,
 		  priority_queue<Job*, vector<Job*>, JobPtrComp>& goodQueue) {
@@ -99,11 +111,23 @@ void loadfromFile(const char* filename,
 	delete in;
 }
 
+/* Computes the weighted sum of completion times according to two different 
+ * scores. BQ is the bad priority queue that uses the non-optimal score
+ * weight - length and GQ is the good priority queue that uses the optimal
+ * score weight/length.
+ */
 pair<long,long> computeWeightedSum(priority_queue<Job*, vector<Job*>, JobPtrComp>& BQ,
 		                   priority_queue<Job*, vector<Job*>, JobPtrComp>& GQ) {
 
+	// weighted sum of completion times using non-optimal score 
+	// weight - length
 	long badWeightedSum = 0;
+
+	// weighted sum of completion times using optimal score
+	// weight/length
 	long goodWeightedSum = 0;
+
+	// current sum of job lengths
 	unsigned int completionTime = 0;
 
 	while( !BQ.empty() ){
@@ -151,14 +175,22 @@ int main(int argc, char** argv) {
 		return -1;
 	}
 
+	// uses the non-optimal score weight - length
 	priority_queue<Job*, vector<Job*>, JobPtrComp> myBadQueue;
 
+	// uses the optimal score weight/length
 	priority_queue<Job*, vector<Job*>, JobPtrComp> myGoodQueue;
 		
+	// parse the text file and input each job into the 
+	// two queues according to their respective scores
 	loadfromFile(argv[IN_IDX], myBadQueue, myGoodQueue);
 
+	// compute the weighted sum of completion times
 	pair<long, long> completionSumPair = computeWeightedSum(myBadQueue, myGoodQueue);
 
+	// return the weighted sums of completion times. 
+	// The first sum uses the non-optimal score weight - length.
+	// The second sum uses the optimal score weight/length.
 	cout << "Bad Sum of Weighted Completion Times: " << completionSumPair.first << endl;
 
 	cout << "Good Sum of Weighted Completion Times: " << completionSumPair.second << endl;
